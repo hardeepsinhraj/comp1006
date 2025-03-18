@@ -57,22 +57,35 @@ else if (!is_numeric($countryId)) {
 //photo check vallidation
 if(isset($_FILES['photo'])){
     //original files name + extensiton
-    echo $_FILES['photo']['name']."<br>";
+    // echo $_FILES['photo']['name']."<br>";
 
-    //file size in bytes(1kb = 1024 bytes)
-    echo $_FILES['photo']['size']."<br>";
+    // //file size in bytes(1kb = 1024 bytes)
+    // echo $_FILES['photo']['size']."<br>";
 
-    //file type - only based on extension and is not accurate safe
-    echo $_FILES['photo']['type']."<br>";
+    // //file type - only based on extension and is not accurate safe
+    // echo $_FILES['photo']['type']."<br>";
     
-    //temp location of upload in server chache
-    echo $_FILES['photo']['tmp_name']."<br>";
+    // //temp location of upload in server chache
+    // echo $_FILES['photo']['tmp_name']."<br>";
 
-    //usw MIME type instead of type to check the ACTUAL file type, not just the extension
-    echo mime_content_type($_FILES['photo']['tmp_name'])."<br>";
+    // //usw MIME type instead of type to check the ACTUAL file type, not just the extension
+    // echo mime_content_type($_FILES['photo']['tmp_name'])."<br>";
 
-    //copy uploaded file to img location
-    move_uploaded_file($_FILES['photo']['tmp_name'], 'img/'.$_FILES['photo']['name']);
+    // //copy uploaded file to img location
+    // move_uploaded_file($_FILES['photo']['tmp_name'], 'img/'.$_FILES['photo']['name']);
+
+    $type = mime_content_type($_FILES['photo']['tmp_name']);
+    if($type != 'image/jpeg' && $type != 'image/png'){
+      echo 'Please upload a valid image file';
+        $ok = false;  
+    } 
+    else{
+        //create unique name to prevent overwriting files. e.g. => sd98r32wrli-logo.png
+        $photo = uniqid() . '-' . $_FILES['photo']['name'];
+
+        //copy uploaded file to img location
+        move_uploaded_file($_FILES['photo']['tmp_name'], 'img/'.$photo);
+    }              
 }
 // only save to db if we have no validation errors
 if ($ok == true) {
@@ -80,8 +93,8 @@ if ($ok == true) {
     include ('shared/db.php');
 
     // set up sql insert
-    $sql = "INSERT INTO destinations (name, attractions, countryId, visited) VALUES 
-        (:name, :attractions, :countryId, :visited)";
+    $sql = "INSERT INTO destinations (name, attractions, countryId, visited, photo) VALUES 
+        (:name, :attractions, :countryId, :visited, :photo)";
     $cmd = $db->prepare($sql);
 
     // fill insert params for safety
@@ -89,9 +102,10 @@ if ($ok == true) {
     $cmd->bindParam(':attractions', $attractions, PDO::PARAM_STR, 255);
     $cmd->bindParam(':countryId', $countryId, PDO::PARAM_INT);
     $cmd->bindParam(':visited', $visited, PDO::PARAM_BOOL);
+    $cmd->bindParam(':photo', $photo, PDO::PARAM_STR, 100);
 
     // execute insert
-   // $cmd->execute();
+   $cmd->execute();
 
     // disconnect
     $db = null;

@@ -10,7 +10,7 @@ include('shared/auth-check.php');
     $destinationId = $_GET['destinationId'];
 
     // set up query
-    include('shared/db.php');
+    include('shared/db.php'); 
     $sql = "SELECT * FROM destinations WHERE destinationId = :destinationId";
     $cmd = $db->prepare($sql);
     $cmd->bindParam(':destinationId', $destinationId, PDO::PARAM_INT);
