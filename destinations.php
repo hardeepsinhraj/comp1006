@@ -4,7 +4,7 @@
     include ('shared/header.php'); ?>
     
     <h1>Destinations</h1>
-    <a href="destination.php">Add a New Destination</a>
+    <a href="add-destination.php">Add a New Destination</a>
     <?php
     include ('shared/db.php');
 

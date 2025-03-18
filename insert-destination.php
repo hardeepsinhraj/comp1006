@@ -54,7 +54,26 @@ else if (!is_numeric($countryId)) {
     echo '<h4>Country is invalid</h4>';
     $ok = false;
 }
+//photo check vallidation
+if(isset($_FILES['photo'])){
+    //original files name + extensiton
+    echo $_FILES['photo']['name']."<br>";
 
+    //file size in bytes(1kb = 1024 bytes)
+    echo $_FILES['photo']['size']."<br>";
+
+    //file type - only based on extension and is not accurate safe
+    echo $_FILES['photo']['type']."<br>";
+    
+    //temp location of upload in server chache
+    echo $_FILES['photo']['tmp_name']."<br>";
+
+    //usw MIME type instead of type to check the ACTUAL file type, not just the extension
+    echo mime_content_type($_FILES['photo']['tmp_name'])."<br>";
+
+    //copy uploaded file to img location
+    move_uploaded_file($_FILES['photo']['tmp_name'], 'img/'.$_FILES['photo']['name']);
+}
 // only save to db if we have no validation errors
 if ($ok == true) {
     // connect
@@ -72,7 +91,7 @@ if ($ok == true) {
     $cmd->bindParam(':visited', $visited, PDO::PARAM_BOOL);
 
     // execute insert
-    $cmd->execute();
+   // $cmd->execute();
 
     // disconnect
     $db = null;

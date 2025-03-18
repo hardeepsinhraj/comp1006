@@ -46,10 +46,10 @@ include('shared/auth-check.php');
     
     <fieldset>
         <label for="photo">Photo:</label>
-        <input type="file" name="photo" id="photo" accept="image/*" />  
+        <input type="file" name="photo"  />  
     </fieldset>
     
-    <button type="submit">Save</button>
+    
 </form>
 
     <button>Save</button>
