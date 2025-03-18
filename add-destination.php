@@ -1,9 +1,11 @@
+<?php 
+// auth check: only let authenticated users access this page
+include('shared/auth-check.php');
 
-    <?php 
-    $title = 'Destination';
-    include ('shared/header.php'); ?>
+    $title = 'Destination Details';
+    include('shared/header.php'); ?>
     <h1>Destination Details</h1>
-    <form method="post" action="save-destination.php">
+    <form method="post" action="insert-destination.php" enctype="multipart/form-data">
     <fieldset>
         <label for="name">Name:</label>
         <input name="name" required maxlength="50" />
@@ -39,6 +41,17 @@
         <label for="visited">Visited:</label>
         <input type="checkbox" name="visited" />
     </fieldset>
+
+
+    
+    <fieldset>
+        <label for="photo">Photo:</label>
+        <input type="file" name="photo" id="photo" accept="image/*" />  
+    </fieldset>
+    
+    <button type="submit">Save</button>
+</form>
+
     <button>Save</button>
     </form>
         </main>

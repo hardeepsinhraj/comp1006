@@ -1,3 +1,7 @@
+<?php
+// auth check: only let authenticated users access this page
+include('shared/auth-check.php');
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -8,6 +12,7 @@
 <body>
 <?php
 // capture form inputs into vars
+$destinationId = $_POST['destinationId'];
 $name = $_POST['name'];
 $attractions = $_POST['attractions'];
 $countryId = $_POST['countryId'];
@@ -27,6 +32,11 @@ else {
 
 // validation
 $ok = true;
+
+if (empty($destinationId)) {
+    echo '<h4>Invalid Destination</h4>';
+    $ok = false;
+}
 
 if (empty($name)) {
     echo '<h4>Name is required</h4>';
@@ -56,9 +66,8 @@ if ($ok == true) {
     // connect
     include ('shared/db.php');
 
-    // set up sql insert
-    $sql = "INSERT INTO destinations (name, attractions, countryId, visited) VALUES 
-        (:name, :attractions, :countryId, :visited)";
+    // set up sql update
+    $sql = "UPDATE destinations SET name = :name, attractions = :attractions, countryId = :countryId, visited = :visited WHERE destinationId = :destinationId";
     $cmd = $db->prepare($sql);
 
     // fill insert params for safety
@@ -66,6 +75,7 @@ if ($ok == true) {
     $cmd->bindParam(':attractions', $attractions, PDO::PARAM_STR, 255);
     $cmd->bindParam(':countryId', $countryId, PDO::PARAM_INT);
     $cmd->bindParam(':visited', $visited, PDO::PARAM_BOOL);
+    $cmd->bindParam(':destinationId', $destinationId, PDO::PARAM_INT);
 
     // execute insert
     $cmd->execute();
@@ -74,7 +84,8 @@ if ($ok == true) {
     $db = null;
 
     // confirmation
-    echo 'Destination saved';
+    //echo 'Destination saved';
+    header('location:destinations.php');
 }
 ?>
 </body>

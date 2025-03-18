@@ -9,7 +9,7 @@
     <?php
     // try some numeric vars. alwars start with $
     $x = 20;
-    $y = 10;
+    $y = 30;
     $z = $x + $y;
     echo $z. '<br />';
 
@@ -23,8 +23,8 @@
     $last = 'Fuber';
     echo $first. '' . $last;
 
-    echo "<h1>$first</h1>";
-    echo '<h1>$first</h1>';
+    // echo "<h1>$first. '' . $last</h1>";
+    // echo "<h1>$last</h1>";
     ?>
 </body>
 </html>
