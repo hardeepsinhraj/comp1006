@@ -54,64 +54,69 @@ else if (!is_numeric($countryId)) {
     echo '<h4>Country is invalid</h4>';
     $ok = false;
 }
-//photo check vallidation
-if(isset($_FILES['photo'])){
-    //original files name + extensiton
-    // echo $_FILES['photo']['name']."<br>";
 
-    // //file size in bytes(1kb = 1024 bytes)
-    // echo $_FILES['photo']['size']."<br>";
+// photo check & validation
+if ($_FILES['photo']['size'] > 0) {
+    // original file name + extension
+    //echo $_FILES['photo']['name'] . '<br />';
 
-    // //file type - only based on extension and is not accurate safe
-    // echo $_FILES['photo']['type']."<br>";
-    
-    // //temp location of upload in server chache
-    // echo $_FILES['photo']['tmp_name']."<br>";
+    // file size in bytes (1 kb = 1024 kb)
+    //echo $_FILES['photo']['size'] . '<br />';
 
-    // //usw MIME type instead of type to check the ACTUAL file type, not just the extension
-    // echo mime_content_type($_FILES['photo']['tmp_name'])."<br>";
+    // file type - only based on extension and is NOT accurate or safe
+    //echo $_FILES['photo']['type'] . '<br />';
 
-    // //copy uploaded file to img location
-    // move_uploaded_file($_FILES['photo']['tmp_name'], 'img/'.$_FILES['photo']['name']);
+    // temp location of upload in server cache
+    //echo $_FILES['photo']['tmp_name'] . '<br />';
+
+    // use MIME type instead of type to check the ACTUAL file type, not just extension
+    //echo mime_content_type($_FILES['photo']['tmp_name']) . '<br />';
 
     $type = mime_content_type($_FILES['photo']['tmp_name']);
-    if($type != 'image/jpeg' && $type != 'image/png'){
-      echo 'Please upload a valid image file';
-        $ok = false;  
-    } 
-    else{
-        //create unique name to prevent overwriting files. e.g. => sd98r32wrli-logo.png
+    if ($type != 'image/jpeg' && $type != 'image/png') {
+        echo 'Please upload a valid image file';
+        $ok = false;
+    }
+    else {
+        // create unique name to prevent file overwriting. e.g. logo.png => sd98r32wrli-logo.png
         $photo = uniqid() . '-' . $_FILES['photo']['name'];
 
-        //copy uploaded file to img location
-        move_uploaded_file($_FILES['photo']['tmp_name'], 'img/'.$photo);
-    }              
+        // copy upload to img directory
+        move_uploaded_file($_FILES['photo']['tmp_name'], 'img/' . $photo);
+    }    
 }
+
 // only save to db if we have no validation errors
 if ($ok == true) {
-    // connect
-    include ('shared/db.php');
+    try {
+        // connect
+        include ('shared/db.php');
 
-    // set up sql insert
-    $sql = "INSERT INTO destinations (name, attractions, countryId, visited, photo) VALUES 
-        (:name, :attractions, :countryId, :visited, :photo)";
-    $cmd = $db->prepare($sql);
+        // set up sql insert
+        $sql = "INSERT INTO destinations (name, attractions, countryId, visited, photo) VALUES 
+            (:name, :attractions, :countryId, :visited, :photo)";
+        $cmd = $db->prepare($sql);
 
-    // fill insert params for safety
-    $cmd->bindParam(':name', $name, PDO::PARAM_STR, 50);
-    $cmd->bindParam(':attractions', $attractions, PDO::PARAM_STR, 255);
-    $cmd->bindParam(':countryId', $countryId, PDO::PARAM_INT);
-    $cmd->bindParam(':visited', $visited, PDO::PARAM_BOOL);
-    $cmd->bindParam(':photo', $photo, PDO::PARAM_STR, 100);
+        // fill insert params for safety
+        $cmd->bindParam(':name', $name, PDO::PARAM_STR, 50);
+        $cmd->bindParam(':attractions', $attractions, PDO::PARAM_STR, 255);
+        $cmd->bindParam(':countryId', $countryId, PDO::PARAM_INT);
+        $cmd->bindParam(':visited', $visited, PDO::PARAM_BOOL);
+        $cmd->bindParam(':photo', $photo, PDO::PARAM_STR, 100);
 
-    // execute insert
-   $cmd->execute();
+        // execute insert
+        $cmd->execute();
 
-    // disconnect
-    $db = null;
+        // disconnect
+        $db = null;
 
-    // confirmation
-    echo 'Destination saved';
+        // confirmation
+        echo 'Destination saved';
+    }
+    catch (Exception $err) {
+        // show generic error page, not the error description
+        header('location:error.php');
+    }
 }
 ?>
 </body>

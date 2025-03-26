@@ -18,22 +18,28 @@ include('shared/auth-check.php');
         <label for="countryId">Country:</label>
         <select name="countryId" required>
             <?php
-            // connect
-            include ('shared/db.php');
+            try {
+                // connect
+                include ('shared/db.php');
 
-            // fetch & store country list from db
-            $sql = "SELECT * FROM countries ORDER BY name ASC";
-            $cmd = $db->prepare($sql);
-            $cmd->execute();
-            $countries = $cmd->fetchAll();
+                // fetch & store country list from db
+                $sql = "SELECT * FROM countries ORDER BY name ASC";
+                $cmd = $db->prepare($sql);
+                $cmd->execute();
+                $countries = $cmd->fetchAll();
 
-            // add each country to dropdown
-            foreach ($countries as $country) {
-                echo '<option value="' . $country['countryId'] . '">' . $country['name'] . '</option>';
+                // add each country to dropdown
+                foreach ($countries as $country) {
+                    echo '<option value="' . $country['countryId'] . '">' . $country['name'] . '</option>';
+                }
+
+                // disconnect
+                $db = null;
             }
-
-            // disconnect
-            $db = null;
+            catch (Exception $err) {
+                // show generic error page, not the error description
+                header('location:error.php');
+            }
             ?>
         </select>
     </fieldset>
@@ -41,19 +47,12 @@ include('shared/auth-check.php');
         <label for="visited">Visited:</label>
         <input type="checkbox" name="visited" />
     </fieldset>
-
-
-    
     <fieldset>
         <label for="photo">Photo:</label>
-        <input type="file" name="photo"  />  
+        <input type="file" name="photo" accept=".jpg,.png" />
     </fieldset>
-    
-    
-</form>
-
     <button>Save</button>
     </form>
         </main>
 </body>
-</html>
+</html

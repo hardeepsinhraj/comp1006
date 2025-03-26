@@ -9,6 +9,7 @@ Scenario 3: valid username + password => store user in session var, redirect to 
 $username = $_POST['username'];
 $password = $_POST['password'];
 
+try{
 // connect
 include('shared/db.php');
 
@@ -44,5 +45,10 @@ else {
     // if username or password don't match anything in db, redirect to login with err message
     $db = null;
     header('location:login.php?invalid=true');
+}
+}
+catch (Exception $err) {
+    // show generic error page, not the error description
+    header('location:error.php');
 }
 ?>

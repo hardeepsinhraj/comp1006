@@ -4,6 +4,7 @@
     include('shared/header.php'); ?>
     <h1>Countries</h1>
     <?php
+    try{
     // connect
     include('shared/db.php');
     
@@ -27,6 +28,11 @@
 
     // disconnect
     $db = null;
+}
+catch (Exception $err) {
+    // show generic error page, not the error description
+    header('location:error.php');
+}
     ?>
     </main>
 </body>
