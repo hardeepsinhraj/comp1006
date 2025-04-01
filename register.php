@@ -16,9 +16,20 @@
             <label for="confirm">Confirm Password:</label>
             <input name="confirm" type="password" required pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[\W_]).{8,}" id="confirm" onkeyup="return comparePasswords();" maxlength="50" />
         </fieldset>
-        <button onclick="return comparePasswords();">Register</button>
+        
+        <button onclick="return comparePasswords();" class="g-recaptcha"
+        data-sitekey="6LdBXwYrAAAAAGwcKdXA_HiNUEmUrmv0B9S-Hjtv" 
+        data-callback='onSubmit' 
+        data-action='submit'>Register</button>
     </form>
 </main>
+<!-- recaptcha API -->
+<script src="https://www.google.com/recaptcha/api.js"></script>
+<script>
+    function onSubmit(token){
+        document.getElementById("register-form").submit();
+    }
+</script>
 </body>
 </html>
 
@@ -26,19 +37,3 @@
 
 
 
-<!-- 
-
-    <h1>Register</h1>
-    <form method="post" action="insert-user.php">
-        <fieldset>
-            <label for="username">Username:</label>
-            <input name="username"/>
-</fieldset>
-<fieldset>
-            <label for="password">Password:</label>
-            <input name="password"/>
-</fieldset>
-<button>Register</button>
-</main>
-</body>
-</html> -->
